@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     const from = searchParams.get('from');
     const to = searchParams.get('to');
 
-    if (typeof from !== 'string' || typeof to !== 'string') {
+    if (!from || !to) {
         return NextResponse.json({ error: 'Invalid currency pair.' }, { status: 400 });
     }
 
@@ -20,26 +20,56 @@ export async function GET(req: Request) {
     const coinbaseUrl = `${COINBASE_BASE_URL}${from.toUpperCase()}`;
     const bitfinexUrl = `${BITFINEX_BASE_URL}t${from.toUpperCase()}${to.toUpperCase()}`;
 
+    let prices = [];
+    let apiStatus = {
+        bitstamp: false,
+        coinbase: false,
+        bitfinex: false,
+    };
+
     try {
-        // Fetch data from the 3 APIs
-        const [bitstampRes, coinbaseRes, bitfinexRes] = await Promise.all([
-            axios.get(bitstampUrl),
-            axios.get(coinbaseUrl),
-            axios.get(bitfinexUrl),
-        ]);
-
-        // Extract relevant data
+        const bitstampRes = await axios.get(bitstampUrl);
         const bitstampPrice = parseFloat(bitstampRes.data.last);
-        const coinbaseRate = parseFloat(coinbaseRes.data.data.rates[to.toUpperCase()]);
-        const bitfinexPrice = parseFloat(bitfinexRes.data[0][1]); // second element is the last price
-
-        // Calculate the average price
-        const averagePrice = (bitstampPrice + (1 / coinbaseRate) + bitfinexPrice) / 3;
-
-        // Respond with the average price
-        return NextResponse.json({ averagePrice: averagePrice.toFixed(2) });
+        if (!isNaN(bitstampPrice)) {
+            prices.push(bitstampPrice);
+            apiStatus.bitstamp = true; // Mark as valid
+        }
     } catch (error) {
-        console.error('Error fetching ticker data:', error);
-        return NextResponse.json({ error: 'Failed to fetch ticker data' }, { status: 500 });
+        console.error('Bitstamp API failed:', error);
     }
+
+    try {
+        const coinbaseRes = await axios.get(coinbaseUrl);
+        const coinbaseRate = parseFloat(coinbaseRes.data.data.rates[to.toUpperCase()]);
+        if (!isNaN(coinbaseRate)) {
+            prices.push(1 / coinbaseRate);
+            apiStatus.coinbase = true; // Mark as valid
+        }
+    } catch (error) {
+        console.error('Coinbase API failed:', error);
+    }
+
+    try {
+        const bitfinexRes = await axios.get(bitfinexUrl);
+        const bitfinexPrice = parseFloat(bitfinexRes.data[0][1]); // second element is the last price
+        if (!isNaN(bitfinexPrice)) {
+            prices.push(bitfinexPrice);
+            apiStatus.bitfinex = true; // Mark as valid
+        }
+    } catch (error) {
+        console.error('Bitfinex API failed:', error);
+    }
+
+    if (prices.length === 0) {
+        return NextResponse.json({ error: 'No valid data available for the selected pair.' }, { status: 404 });
+    }
+
+    // Calculate the average price (excluding APIs that failed)
+    const averagePrice = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+
+    // Respond with the average price and which APIs were used
+    return NextResponse.json({
+        averagePrice: averagePrice.toFixed(2),
+        apiStatus,
+    });
 }
