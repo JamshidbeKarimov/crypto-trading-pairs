@@ -1,4 +1,3 @@
-// src/app/components/TickerInfo.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -8,8 +7,21 @@ interface TickerInfoProps {
     selectedPair: { from: string; to: string } | null;
 }
 
+interface TickerData {
+    open: string;
+    high: string;
+    low: string;
+    last: string;
+    volume: string;
+    vwap: string;
+    bid: string;
+    ask: string;
+    open_24: string;
+    percent_change_24: string;
+}
+
 const TickerInfo = ({ selectedPair }: TickerInfoProps) => {
-    const [tickerData, setTickerData] = useState<any>(null);
+    const [tickerData, setTickerData] = useState<TickerData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -20,7 +32,7 @@ const TickerInfo = ({ selectedPair }: TickerInfoProps) => {
             const pair = `${selectedPair.from.toLowerCase()}${selectedPair.to.toLowerCase()}`;
             try {
                 const response = await fetch(`/api/ticker?pair=${pair}`);
-                const data = await response.json();
+                const data: TickerData = await response.json();
                 setTickerData(data);
             } catch (error) {
                 console.error('Failed to fetch ticker data:', error);
@@ -53,7 +65,7 @@ const TickerInfo = ({ selectedPair }: TickerInfoProps) => {
         { number: tickerData.percent_change_24, description: 'Percent Change (24h)' },
     ];
 
-    return <GJNumbersView title={`Ticker Info for ${selectedPair.from}/${selectedPair.to}`} numbers={numberDescriptionList} />;
+    return <GJNumbersView title={`Ticker Info for ${selectedPair?.from}/${selectedPair?.to}`} numbers={numberDescriptionList} />;
 };
 
 export default TickerInfo;
