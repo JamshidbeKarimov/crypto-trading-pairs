@@ -1,0 +1,18 @@
+.numbersViewContainer {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.numbersViewTitle {
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+.numbersGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
