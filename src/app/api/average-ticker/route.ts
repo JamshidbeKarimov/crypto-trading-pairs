@@ -20,8 +20,8 @@ export async function GET(req: Request) {
     const coinbaseUrl = `${COINBASE_BASE_URL}${from.toUpperCase()}`;
     const bitfinexUrl = `${BITFINEX_BASE_URL}t${from.toUpperCase()}${to.toUpperCase()}`;
 
-    let prices = [];
-    let apiStatus = {
+    const prices = [];
+    const apiStatus = {
         bitstamp: false,
         coinbase: false,
         bitfinex: false,
