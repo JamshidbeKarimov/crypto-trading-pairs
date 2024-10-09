@@ -6,6 +6,12 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.tradingPairsContainer p {
+    color: #0a0a0a;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
 .tradingPairsHeader {
     color: #0a0a0a;
     font-size: 1.5rem;

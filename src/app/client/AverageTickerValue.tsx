@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from '../styles/AverageTickerValue.module.css'; // Import the CSS module
+import styles from '../styles/AverageTickerValue.module.css';
 
 interface SelectedPair {
     from: string;
@@ -63,7 +63,6 @@ const AverageTickerValue = ({ selectedPair }: AverageTickerValueProps) => {
                         <p>Select a trading pair to see the average value.</p>
                     )}
 
-                    {/* Show API status */}
                     <div className={styles.apiStatus}>
                         <p>Calculated from:</p>
                         <ul>

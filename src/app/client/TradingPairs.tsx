@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from '../styles/TradingPairs.module.css'; // Import the CSS module
+import styles from '../styles/TradingPairs.module.css';
 
 interface TradingPair {
     name: string;
@@ -36,7 +36,6 @@ const TradingPairs = ({ onSelect }: TradingPairsProps) => {
         fetchTradingPairs();
     }, []);
 
-    // Calculate the pairs to display for the current page
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const currentPairs = pairs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
     const totalPages = Math.ceil(pairs.length / ITEMS_PER_PAGE);
@@ -60,7 +59,6 @@ const TradingPairs = ({ onSelect }: TradingPairsProps) => {
                             </li>
                         ))}
                     </ul>
-                    {/* Pagination Controls */}
                     <div className={styles.pagination}>
                         <button
                             disabled={currentPage === 1}
