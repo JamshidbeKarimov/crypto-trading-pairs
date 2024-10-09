@@ -7,7 +7,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 Make sure you have the following installed on your machine: Node.js (>= 14.x) and npm (>= 6.x) or yarn (>= 1.x). First, clone the repository:
 
 ```bash
-git clone https://github.com/your-username/crypto-dashboard.git
+git clone https://github.com/JamshidbeKarimov/crypto-dashboard.git
 cd crypto-dashboard
 ```
 
